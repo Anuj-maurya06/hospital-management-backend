@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // --- Middlewares ---
 app.use(cookieParser());
-
+app.set("trust proxy", 1);
 // --- File upload (Vercel safe) ---
 app.use(
   fileUpload({

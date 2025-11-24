@@ -1,4 +1,3 @@
-
 export const generateToken = (user, message, statusCode, res) => {
   const token = user.generateJsonWebToken();
   // Determine the cookie name based on the user's role
@@ -11,6 +10,8 @@ export const generateToken = (user, message, statusCode, res) => {
         Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
       ),
       httpOnly: true,
+      secure: true,       // Vercel HTTPS ke liye zaruri
+      sameSite: 'none',   // cross-site cookie allow
     })
     .json({
       success: true,
@@ -19,3 +20,26 @@ export const generateToken = (user, message, statusCode, res) => {
       token,
     });
 };
+
+
+
+// export const generateToken = (user, message, statusCode, res) => {
+//   const token = user.generateJsonWebToken();
+//   // Determine the cookie name based on the user's role
+//   const cookieName = user.role === 'Admin' ? 'adminToken' : 'patientToken';
+
+//   res
+//     .status(statusCode)
+//     .cookie(cookieName, token, {
+//       expires: new Date(
+//         Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+//       ),
+//       httpOnly: true,
+//     })
+//     .json({
+//       success: true,
+//       message,
+//       user,
+//       token,
+//     });
+// };

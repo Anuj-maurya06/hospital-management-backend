@@ -10,9 +10,29 @@ import appointmentRouter from "./router/appointmentRouter.js";
 const app = express();
 config({ path: "./config/config.env" });
 
-// --- FIXED GLOBAL CORS FOR VERCEL ---
+// --- CORS: allow origins from env (comma-separated) and enable credentials ---
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://hospital-management-user-sigma.vercel.app");
+  // FRONTEND_URL can be a single origin or a comma-separated list
+  const raw = process.env.FRONTEND_URL || "";
+  const allowed = raw
+    .split(",")
+    .map((s) => s.trim().replace(/\/+$/, "")) // remove trailing slashes
+    .filter(Boolean);
+
+  const origin = req.headers.origin;
+  const originNormalized = origin ? origin.replace(/\/+$/, "") : "";
+
+  // If the incoming Origin is in the allowed list, echo the actual Origin back.
+  if (origin && allowed.includes(originNormalized)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  } else if (allowed.length === 1) {
+    // Single configured frontend: use that (use the exact configured value)
+    res.header("Access-Control-Allow-Origin", allowed[0]);
+  } else {
+    // Fallback: if no allowed origin configured, echo incoming origin to support testing.
+    if (origin) res.header("Access-Control-Allow-Origin", origin);
+  }
+
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");

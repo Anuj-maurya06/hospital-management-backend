@@ -8,7 +8,8 @@ import cloudinary from "cloudinary";
 export const patientRegister = catchAsyncErrors(async (req, res, next) => {
   const { firstName, lastName, email, phone, adhar, dob, gender, password } = req.body;
 
-  if (!firstName || !lastName || !email || !phone || !adhar || !dob || !gender || !password) {
+  // Make Aadhar and Date of Birth optional for patient registration.
+  if (!firstName || !lastName || !email || !phone || !gender || !password) {
     return next(new ErrorHandler("Please Fill Full Form!", 400));
   }
 
@@ -17,17 +18,21 @@ export const patientRegister = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("User already Registered!", 400));
   }
 
-  const user = await User.create({
+  // Build user payload and include adhar/dob only if provided to preserve compatibility
+  const userPayload = {
     firstName,
     lastName,
     email,
     phone,
-    adhar,
-    dob,
     gender,
     password,
     role: "Patient",
-  });
+  };
+
+  if (adhar) userPayload.adhar = adhar;
+  if (dob) userPayload.dob = dob;
+
+  const user = await User.create(userPayload);
 
   generateToken(user, "User Registered Successfully", 200, res);
 });

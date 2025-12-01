@@ -10,8 +10,9 @@ export const generateToken = (user, message, statusCode, res) => {
         Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
       ),
       httpOnly: true,
-      secure: true,       // Vercel HTTPS ke liye zaruri
-      sameSite: 'none',   // cross-site cookie allow
+      secure: true, // Vercel HTTPS ke liye zaruri
+      sameSite: 'none', // cross-site cookie allow
+      path: '/', // ensure cookie scope matches clearCookie on logout
     })
     .json({
       success: true,

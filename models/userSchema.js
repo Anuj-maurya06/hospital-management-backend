@@ -27,13 +27,13 @@ const userSchema = new mongoose.Schema({
   },
   adhar: {
     type: String,
-    required: [true, "adhar Is Required!"],
+    // make optional: controllers will enforce when needed (doctor/admin creation)
     minLength: [12, "adhar Must Contain Only 12 Digits!"],
     maxLength: [12, "adhar Must Contain Only 12 Digits!"],
   },
   dob: {
     type: Date,
-    required: [true, "DOB Is Required!"],
+    // optional: allow missing DOB for patient registration
   },
   gender: {
     type: String,

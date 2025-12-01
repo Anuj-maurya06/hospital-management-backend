@@ -114,36 +114,34 @@ export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
 
 // --------------------- Logout Admin ---------------------
 export const logoutAdmin = catchAsyncErrors(async (req, res, next) => {
-  res
-    .status(200)
-    .cookie("adminToken", "", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      path: "/",
-      expires: new Date(0),
-    })
-    .json({
-      success: true,
-      message: "Admin Logged Out Successfully.",
-    });
+  // Clear cookie explicitly to ensure browser removes it
+  res.clearCookie("adminToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Admin Logged Out Successfully.",
+  });
 });
 
 // --------------------- Logout Patient ---------------------
 export const logoutPatient = catchAsyncErrors(async (req, res, next) => {
-  res
-    .status(200)
-    .cookie("patientToken", "", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      path: "/",
-      expires: new Date(0),
-    })
-    .json({
-      success: true,
-      message: "Patient Logged Out Successfully.",
-    });
+  // Clear cookie explicitly to ensure browser removes it
+  res.clearCookie("patientToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Patient Logged Out Successfully.",
+  });
 });
 
 // --------------------- Add New Doctor ---------------------
